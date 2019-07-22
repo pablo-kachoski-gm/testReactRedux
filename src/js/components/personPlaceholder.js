@@ -14,7 +14,6 @@ const NameColumn = style.div`
 const ActionColumn = style.div`
     display: flex;
     width: 200px;
-    background: rgba(188, 234, 188, 0.4);
     justify-content: center;
 `;
 
