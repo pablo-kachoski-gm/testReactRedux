@@ -1,26 +1,51 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { connect } from 'react-redux'
+import { addName } from './js/actions'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const defaultState = {
+  name: ''
+};
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = defaultState;
+  }
+  
+  handleNameInputChange = (event) => {
+    this.setState({name: event.target.value});
+  };
+  handleNameInputClear = (event) => {
+    this.setState(defaultState);
+  }
+  handleAddName = () => {
+    this.props.addName( {name: this.state.name} );
+    this.handleNameInputClear();
+  };
+  render() {
+    const {name} = this.state;
+
+    return (
+      <div className="App">
+        <header className="App-header">
+          {
+            this.props.names.map( username => (<div>{username}</div>))
+          }
+          <div>
+            <input type='text' value={name} onChange={this.handleNameInputChange}></input>
+            <button onClick={this.handleAddName}>Add</button>
+          </div>
+        </header>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  names: state.names
+});
+const mapDispatchToProps = {
+  addName,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps) (App);
