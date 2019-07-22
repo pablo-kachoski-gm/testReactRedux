@@ -1,3 +1,7 @@
-import { ADD_NAME } from '../constants/action-types';
+import { 
+    ADD_PERSON,
+    REMOVE_PERSON 
+} from '../constants/action-types';
 
-export const addName = (payload) => ({ type: ADD_NAME, payload: payload })
+export const addPerson = (payload) => ({ type: ADD_PERSON, payload: payload })
+export const removePerson = (payload) => ({ type: REMOVE_PERSON, payload: payload })

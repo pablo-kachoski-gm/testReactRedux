@@ -1,39 +1,74 @@
 import React from 'react';
 import './App.css';
-import { connect } from 'react-redux'
-import { addName } from './js/actions'
+import { connect } from 'react-redux';
+import { addPerson, removePerson } from './js/actions';
+import PersonPlaceholder from './js/components/personPlaceholder';
+import style from 'styled-components';
+
+const PersonsContainer = style.ul`
+  list-style-type: none;
+  background: rgba(0,0,155, 0.2);
+  padding: 20px 50px;
+`;
+const PersonRowContainer = style.ul`
+  padding: 5px 0;
+`;
+const EmptyPlaceholder = style.div`
+  padding: 20px;
+`;
 
 const defaultState = {
-  name: ''
+  newPersonName: '',
+  addPersonBtnDisabled: true
 };
+
 class App extends React.Component {
   constructor() {
     super();
     this.state = defaultState;
   }
-  
+
   handleNameInputChange = (event) => {
-    this.setState({name: event.target.value});
+    const newPersonName = event.target.value;
+    this.setState({ newPersonName, addPersonBtnDisabled: !newPersonName });
   };
   handleNameInputClear = (event) => {
     this.setState(defaultState);
   }
-  handleAddName = () => {
-    this.props.addName( {name: this.state.name} );
+  handleAddPerson = () => {
+    this.props.addPerson({ name: this.state.newPersonName });
     this.handleNameInputClear();
   };
+  handleRemovePerson = (id) => {
+    this.props.removePerson({ id });
+  };
   render() {
-    const {name} = this.state;
+    const { newPersonName } = this.state;
 
     return (
       <div className="App">
         <header className="App-header">
-          {
-            this.props.names.map( username => (<div>{username}</div>))
-          }
+          {this.props.persons.length > 0 ? (
+            <PersonsContainer>
+              {
+                this.props.persons.map(person => (
+                  <PersonRowContainer key={person.id}>
+                    <PersonPlaceholder person={person} removeAction={this.handleRemovePerson} />
+                  </PersonRowContainer>)
+                )
+              }
+            </PersonsContainer>
+          ) : (<EmptyPlaceholder>Please Add a Person</EmptyPlaceholder>)}
           <div>
-            <input type='text' value={name} onChange={this.handleNameInputChange}></input>
-            <button onClick={this.handleAddName}>Add</button>
+            <input
+              value={newPersonName}
+              onChange={this.handleNameInputChange}
+            />
+            <button
+              onClick={this.handleAddPerson}
+              disabled={(this.state.addPersonBtnDisabled) ? 'disabled' : ''}>
+              Add
+              </button>
           </div>
         </header>
       </div>
@@ -42,10 +77,11 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  names: state.names
+  persons: state.persons.data
 });
 const mapDispatchToProps = {
-  addName,
+  addPerson,
+  removePerson
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

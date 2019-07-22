@@ -1,1 +1,2 @@
-export const ADD_NAME = 'ADD_NAME';
+export const ADD_PERSON = 'ADD_PERSON';
+export const REMOVE_PERSON = 'REMOVE_PERSON';
